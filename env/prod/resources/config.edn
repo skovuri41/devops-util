@@ -1,0 +1,12 @@
+{:dev             true
+ :ssh-server      "127.0.0.1"
+ :ssh-username    "clstm_sbox_api_user1@statestreet.com"
+ :ssh-password    "ClsGtss547$"
+ ;; Need to contact a server with an untrusted SSL cert?
+ :insecure        false
+ :base-url        "https://secureapi.clsdirect-demo.com/ws"
+ :nexus-endpoints {:commons-io "https://repository.apache.org/service/local/repositories/releases/content/commons-io/commons-io/"
+                   :ucp        "https://repository.apache.org/service/local/repositories/releases/content/commons-io/commons-io/"
+                   :cms        "/trademonitor/v1/clients"
+                   :ucp-dev    "/trademonitor/v1/trades"}
+ }
