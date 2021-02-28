@@ -31,30 +31,29 @@
         username      (get env :ssh-username)
         password      (get env :ssh-password)
         remote-path   "/tmp"
-        _             (log/info "sftp artifact: " artifact-name " to host " hostname)]
-    (let [agent (ssh/ssh-agent {})]
-      (let [session (ssh/session agent hostname {:username                 username
-                                                 :password                 password
-                                                 :strict-host-key-checking :no})]
-        (ssh/with-connection session
-          (let [channel (ssh/ssh-sftp session)]
-            (ssh/with-channel-connection channel
-              (ssh/sftp channel {} :cd remote-path)
-              (ssh/sftp channel {} :put artifact-name artifact-name)))
-          (ssh/ssh session {:cmd (str "chmod 755 " remote-path "/" artifact-name)})
-          (let [result (ssh/ssh session {:cmd (str "du -B 1 " remote-path "/" artifact-name)})]
-            (log/info (result :out))))))))
+        _             (log/info "sftp artifact: " artifact-name " to host " hostname)
+        agent (ssh/ssh-agent {})
+        session (ssh/session agent hostname {:username                 username
+                                             :password                 password
+                                             :strict-host-key-checking :no})]
+    (ssh/with-connection session
+      (let [channel (ssh/ssh-sftp session)]
+        (ssh/with-channel-connection channel
+          (ssh/sftp channel {} :cd remote-path)
+          (ssh/sftp channel {} :put artifact-name artifact-name)))
+      (ssh/ssh session {:cmd (str "chmod 755 " remote-path "/" artifact-name)})
+      (let [result (ssh/ssh session {:cmd (str "du -B 1 " remote-path "/" artifact-name)})]
+        (log/info (result :out))))))
 
 (comment
-  (scp-artifact {:name "commons-io" :version "2.8.0"})
-  )
+  (scp-artifact {:name "commons-io" :version "2.8.0"}))
 
 (defn deploy
   [artifact])
 
 (defn -main [& args]
-  (do (mount/start)
-      (log/info "Started...")
-      (download-artifact {:name "commons-io" :version "2.8.0"})
-      (scp-artifact {:name "commons-io" :version "2.8.0"})
-      (log/info "Completed...")))
+  (mount/start)
+  (log/info "Started...")
+  (download-artifact {:name "commons-io" :version "2.8.0"})
+  (scp-artifact {:name "commons-io" :version "2.8.0"})
+  (log/info "Completed..."))

@@ -10,7 +10,6 @@
                  [me.raynes/fs "1.4.6"]
                  [cprop "0.1.17"]
                  [nrepl "0.8.3"]
-                 [clossher "0.0.4"]
                  [mount "0.1.16"]
                  [funcool/cuerdas "2020.03.26-3"]
                  [ch.qos.logback/logback-classic "1.2.3"]
@@ -19,7 +18,6 @@
                  [org.clojure/tools.logging "1.1.0"]
                  [semantic-csv "0.2.1-alpha1"]
                  [http-kit "2.5.3"]
-                 [tea-time "1.0.1"]
                  [medley "1.3.0"]
                  [clj-commons/clj-ssh "0.5.15"]
                  [metosin/ring-http-response "0.9.2"]]
@@ -65,22 +63,4 @@
    :project/test  {:jvm-opts       ["-Dconf=test-config.edn"]
                    :resource-paths ["env/test/resources"]}
    :profiles/dev  {}
-   :profiles/test {}}
-
-  ;; Manifest-Version: 1.0
-  ;; Created-By: Leiningen 2.9.3
-  ;; Built-By: shyam
-  ;; Build-Jdk: 11.0.10
-  ;; Leiningen-Project-ArtifactId: ucp-deploy
-  ;; Leiningen-Project-GroupId: ucp-deploy
-  ;; Leiningen-Project-Version: 0.1.0-SNAPSHOT
-  ;; Main-Class: ucp_deploy.core
-
-  ;; :manifest {"Class-Path" ~(clojure.string/join
-  ;;                            \space
-  ;;                            (map #(str "./lib/" %) (.list (io/file "./lib"))))
-  ;;            }
-
-
-
-  )
+   :profiles/test {}})
