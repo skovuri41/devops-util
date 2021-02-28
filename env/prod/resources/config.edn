@@ -1,7 +1,7 @@
 {:dev             true
- :ssh-server      "127.0.0.1"
- :ssh-username    "clstm_sbox_api_user1@statestreet.com"
- :ssh-password    "ClsGtss547$"
+ :ssh-hostname    "172.17.0.2"
+ :ssh-username    "test"
+ :ssh-password    "test"
  ;; Need to contact a server with an untrusted SSL cert?
  :insecure        false
  :base-url        "https://secureapi.clsdirect-demo.com/ws"

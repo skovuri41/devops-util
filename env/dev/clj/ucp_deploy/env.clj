@@ -1,4 +1,4 @@
-(ns tm-api.env
+(ns ucp-deploy.env
   (:require [clojure.tools.logging :as log]))
 
 (def defaults

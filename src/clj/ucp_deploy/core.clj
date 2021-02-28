@@ -2,6 +2,7 @@
   (:require
    [clojure.tools.logging :as log]
    [clojure.java.io :as io]
+   [clj-ssh.ssh :as ssh]
    [ucp-deploy.config :refer [env]]
    [org.httpkit.client :as http]
    [cli-matic.core :refer [run-cmd]]
@@ -13,25 +14,40 @@
   (let [endpoint (get-in env [:nexus-endpoints (keyword name)])]
     (str endpoint version "/" (str name "-" version ".jar"))))
 
-(comment
-  (def nexurl https://repository.apache.org/service/local/repositories/releases/content/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar)
-  (http/get "http://site.com/favicon.ico" {:as :stream}
-            (fn [{:keys [status headers body error opts]}]
-              ;; body is a java.io.InputStream
-              )))
-
 (defn download-artifact
   [{:keys [name version]}]
   (let [artifact-name                                      (str name "-" version ".jar")
-        {:keys [status headers body error opts] :as resp } @(http/get (nexus-url name version) {:as :stream})]
+        endpoint                                           (nexus-url name version)
+        _                                                  (log/info endpoint)
+        {:keys [status headers body error opts] :as resp } @(http/get endpoint {:as :stream})]
     (if error
       (log/info "download artifact failure " name status error)
       (io/copy body (io/file artifact-name)))))
 
-
 (defn scp-artifact
-  [artifact])
+  [{:keys [name version]}]
+  (let [artifact-name (str name "-" version ".jar")
+        hostname      (get env :ssh-hostname)
+        username      (get env :ssh-username)
+        password      (get env :ssh-password)
+        remote-path   "/tmp"
+        _             (log/info "sftp artifact: " artifact-name " to host " hostname)]
+    (let [agent (ssh/ssh-agent {})]
+      (let [session (ssh/session agent hostname {:username                 username
+                                                 :password                 password
+                                                 :strict-host-key-checking :no})]
+        (ssh/with-connection session
+          (let [channel (ssh/ssh-sftp session)]
+            (ssh/with-channel-connection channel
+              (ssh/sftp channel {} :cd remote-path)
+              (ssh/sftp channel {} :put artifact-name artifact-name)))
+          (ssh/ssh session {:cmd (str "chmod 755 " remote-path "/" artifact-name)})
+          (let [result (ssh/ssh session {:cmd (str "du -B 1 " remote-path "/" artifact-name)})]
+            (log/info (result :out))))))))
 
+(comment
+  (scp-artifact {:name "commons-io" :version "2.8.0"})
+  )
 
 (defn deploy
   [artifact])
@@ -40,4 +56,5 @@
   (do (mount/start)
       (log/info "Started...")
       (download-artifact {:name "commons-io" :version "2.8.0"})
-      (log/info "Downloaded Successfully")))
+      (scp-artifact {:name "commons-io" :version "2.8.0"})
+      (log/info "Completed...")))

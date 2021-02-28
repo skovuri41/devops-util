@@ -1,6 +1,6 @@
-(ns tm-api.core-test
+(ns ucp-deploy.core-test
   (:require [clojure.test :refer :all]
-            [tm-api.core :refer :all]))
+            [ucp-deploy.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

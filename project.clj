@@ -1,3 +1,4 @@
+(require '[clojure.java.io :as io])
 (defproject ucp-deploy "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
@@ -9,6 +10,7 @@
                  [me.raynes/fs "1.4.6"]
                  [cprop "0.1.17"]
                  [nrepl "0.8.3"]
+                 [clossher "0.0.4"]
                  [mount "0.1.16"]
                  [funcool/cuerdas "2020.03.26-3"]
                  [ch.qos.logback/logback-classic "1.2.3"]
@@ -28,7 +30,7 @@
   :test-paths ["test/clj"]
   :resource-paths ["resources"]
   :target-path "target/%s/"
-  :main ^:skip-aot ucp-deploy.core
+  :main ucp-deploy.core
   :bin {:name          "ucpdeploy"
         :bin-path      "./"
         :bootclasspath false
@@ -36,13 +38,15 @@
         }
   :plugins [[lein-binplus "0.6.6"]
             [lein-eftest "0.5.1"]
-            [lein-kibit "0.1.6"]]
+            [lein-kibit "0.1.6"]
+            [lein-libdir "0.1.1"]]
   :profiles
-  {:uberjar {:omit-source    true
-             :aot            :all
-             :uberjar-name   "ucp-deploy.jar"
-             :source-paths   ["env/prod/clj"]
-             :resource-paths ["env/prod/resources"]}
+  {:uberjar {:omit-source              true
+             :aot                      :all
+             :uberjar-name             "ucp-deploy.jar"
+             :source-paths             ["env/prod/clj"]
+             :resource-paths           ["env/prod/resources"]
+             :keep-non-project-classes true}
 
    :dev  [:project/dev :profiles/dev]
    :test [:project/dev :project/test :profiles/test]
@@ -62,6 +66,21 @@
                    :resource-paths ["env/test/resources"]}
    :profiles/dev  {}
    :profiles/test {}}
+
+  ;; Manifest-Version: 1.0
+  ;; Created-By: Leiningen 2.9.3
+  ;; Built-By: shyam
+  ;; Build-Jdk: 11.0.10
+  ;; Leiningen-Project-ArtifactId: ucp-deploy
+  ;; Leiningen-Project-GroupId: ucp-deploy
+  ;; Leiningen-Project-Version: 0.1.0-SNAPSHOT
+  ;; Main-Class: ucp_deploy.core
+
+  ;; :manifest {"Class-Path" ~(clojure.string/join
+  ;;                            \space
+  ;;                            (map #(str "./lib/" %) (.list (io/file "./lib"))))
+  ;;            }
+
 
 
   )
