@@ -1,12 +1,10 @@
-{:dev             true
- :ssh-hostname    "172.17.0.2"
- :ssh-username    "test"
- :ssh-password    "test"
- ;; Need to contact a server with an untrusted SSL cert?
- :insecure        false
- :base-url        "https://demo.com/"
- :nexus-endpoints {:commons-io "https://repository.apache.org/service/local/repositories/releases/content/commons-io/commons-io/"
-                   :ucp        "https://repository.apache.org/service/local/repositories/releases/content/commons-io/commons-io/"
-                   :cms        "/trademonitor/v1/clients"
-                   :ucp-dev    "/trademonitor/v1/trades"}
- }
+{:dev          true
+ :ssh-hostname "172.17.0.2"
+ :ssh-username "test"
+ :ssh-password "test"
+ :remote-path  "/tmp"
+ :insecure     false
+ :commons-io   {:base    "https://repository.apache.org/service/local/repositories/releases/content/commons-io/commons-io/"
+                :name    "commons-io"
+                :version "2.8.0"
+                :type    "jar"}}
