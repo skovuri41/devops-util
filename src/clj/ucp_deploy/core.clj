@@ -19,7 +19,8 @@
   (let [artifact-name                                      (str name "-" version ".jar")
         endpoint                                           (nexus-url name version)
         _                                                  (log/info endpoint)
-        {:keys [status headers body error opts] :as resp } @(http/get endpoint {:as :stream})]
+        {:keys [status headers body error opts] :as resp} @(http/get endpoint {:insecure? (get env :insecure)
+                                                                               :as :stream})]
     (if error
       (log/info "download artifact failure " name status error)
       (io/copy body (io/file artifact-name)))))
@@ -46,6 +47,8 @@
         (log/info (result :out))))))
 
 (comment
+  (nexus-url "commons-io" "2.8.0")
+  (download-artifact {:name "commons-io" :version "2.8.0"})
   (scp-artifact {:name "commons-io" :version "2.8.0"}))
 
 (defn deploy
